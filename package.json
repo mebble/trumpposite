@@ -1,7 +1,7 @@
 {
   "name": "trumpposite",
   "version": "1.0.0",
-  "description": "A twitter bot that retweets Trump every time he tweets, except the retweets are the opposite of what he says.",
+  "description": "A twitter bot that tweets back at Trump every time he tweets, except the tweets are the opposite of what he says.",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
   "author": "Neil Syiemlieh",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "dotenv": "^6.2.0",
     "twitter": "^1.7.1"
   }
