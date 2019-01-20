@@ -31,22 +31,29 @@ async function trumpposite(tweet) {
     const words = tweet.split(' ');
     const promises = words.map(word => {
         return isAlphaNum(word)
-            ? axios.get(`https://api.datamuse.com/words?rel_ant=${word}`)
-            : Promise.resolve({ data: [] });
+            ? getAntonym(word)
+            : Promise.resolve(word);
     });
-    const responses = await Promise.all(promises);
-    const changedWords = responses.map((res, i) => {
-        const list = res.data;
-        return list.length > 0
-            ? list[getRandomInt(0, list.length)].word
-            : words[i];
-    });
+    const changedWords = await Promise.all(promises);
 
     return changedWords.join(' ');
 }
 
+async function getAntonym(word) {
+    /**
+     * Use the Datamuse schema
+     */
+    const response = await axios.get(`https://api.datamuse.com/words?rel_ant=${word}`);
+    const antonyms = response.data;
+    return antonyms.length > 0
+        ? antonyms[getRandomInt(0, antonyms.length)].word
+        : word;
+}
+
 function getRandomInt(min, max) {
-    // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values
+    /**
+     * Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values
+     */
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
@@ -56,7 +63,7 @@ function isAlphaNum(word) {
     return /^[a-z0-9]+$/i.test(word);
 }
 
-const caravan = mock[3];
-trumpposite(caravan)
+const tweet = mock[4];
+trumpposite(tweet)
     .then(console.log)
     .catch(console.error);
