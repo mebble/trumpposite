@@ -1,11 +1,8 @@
 {
   "name": "trumpposite",
   "version": "1.0.0",
-  "description": "The opposite of trump",
+  "description": "A twitter bot that retweets Trump every time he tweets, except the retweets are the opposite of what he says.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mebble/trumpposite.git"
@@ -16,5 +13,9 @@
     "trump"
   ],
   "author": "Neil Syiemlieh",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "twitter": "^1.7.1"
+  }
 }
