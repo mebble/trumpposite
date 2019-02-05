@@ -28,7 +28,9 @@ const params = {
     tweet_mode: 'extended'
 };
 
-const tweet = mock[4];
-trumpposite(tweet)
-    .then(console.log)
-    .catch(console.error);
+const tweet = mock[2];
+// console.log(JSON.stringify(tokenize(tweet)));
+console.log(tweet);
+// trumpposite(tweet)
+    // .then(console.log)
+    // .catch(console.error);
