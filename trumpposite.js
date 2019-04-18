@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { punctuation, isAlphaNum, tokenize } = require('./utils');
+const { splitPunc, isAlphaNum } = require('./utils');
 
 const getAntonym = async (word) => {
     /**
@@ -13,13 +13,15 @@ const getAntonym = async (word) => {
 }
 
 module.exports = async (tweet) => {
-    const tokens = tokenize(tweet);
-    const promises = tokens.map(token => {
-        return isAlphaNum(token)
-            ? getAntonym(token)
-            : Promise.resolve(token);
-    });
+    const tokens = tweet.split(' ');
+    const promises = tokens
+        .map(splitPunc)
+        .map(async ([ punc1, word, punc2 ]) => {
+            const result = isAlphaNum(word)
+                ? await getAntonym(word)
+                : word;
+            return punc1 + result + punc2;
+        });
     const changedTokens = await Promise.all(promises);
-
     return changedTokens.join(' ');
 };

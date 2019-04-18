@@ -7,33 +7,28 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 };
 
-const isAlphaNum = (token) => {
+const isAlphaNum = token => {
     return /^[a-z0-9]+$/i.test(token);
 };
 
-const punctuation = (token) => {
-    let xs, x;
+const splitPunc = token => {
+    if (!/[a-z0-9]/i.test(token)) return [ '', token, '' ];
 
-    [ xs, x ] = [ token.slice(0, -1), token[token.length-1] ];
-    if (!isAlphaNum(x)) return [ xs, x ];
+    const puncs = '?!:;()';
 
-    [ x, xs ] = [ token[0], token.slice(1) ];
-    if (!isAlphaNum(x)) return [ x, xs ];
+    let [ i, j ] = [ 0, token.length-1 ];
+    while (puncs.includes(token[i])) i++;
+    while (puncs.includes(token[j])) j--;
 
-    return token;
-};
+    const punc1 = token.slice(0, i);
+    const word = token.slice(i, j + 1);
+    const punc2 = token.slice(j + 1);
 
-const tokenize = (tweet) => {
-    let tokens = tweet
-        .split(' ')
-        .map(punctuation);
-    tokens = [].concat(...tokens);  // flatten grouped tokens
-    return tokens;
+    return [ punc1, word, punc2 ];
 };
 
 module.exports = {
     getRandomInt,
     isAlphaNum,
-    punctuation,
-    tokenize
+    splitPunc
 };

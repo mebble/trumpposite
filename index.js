@@ -29,8 +29,7 @@ const params = {
 };
 
 const tweet = mock[2];
-// console.log(JSON.stringify(tokenize(tweet)));
 console.log(tweet);
-// trumpposite(tweet)
-    // .then(console.log)
-    // .catch(console.error);
+trumpposite(tweet)
+    .then(console.log)
+    .catch(console.error);
