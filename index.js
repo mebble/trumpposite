@@ -1,9 +1,7 @@
 require('dotenv').config();
 
 const Twitter = require('twitter');
-
 const trumpposite = require('./trumpposite');
-const mock = require('./mock.json');
 
 const {
     CONSUMER_KEY,
@@ -23,13 +21,32 @@ const bot = new Twitter({
     }
 });
 
-const params = {
-    screen_name: 'realDonaldTrump',
-    tweet_mode: 'extended'
-};
+bot.stream('statuses/filter', { follow: '1160721194' }, stream => {
+    console.log('Stream is listening...');
+    stream.on('data', tweet => {
+        if (tweet.user.id_str !== '1160721194') return;
 
-const tweet = mock[2];
-console.log(tweet);
-trumpposite(tweet)
-    .then(console.log)
-    .catch(console.error);
+        const text = tweet.extended_tweet
+            ? tweet.extended_tweet.full_text
+            : tweet.text;
+        console.log(`GOT at (${tweet.created_at}):\n${text}`);
+        trumpposite(text)
+            .then(opposite => {
+                opposite = opposite.substring(0, 280);
+                return bot.post('statuses/update', { status: opposite, tweet_mode: 'extended' });
+            })
+            .then(posted => {
+                const text = posted.full_text || posted.text;
+                console.log(`POSTED at (${posted.created_at}):\n${text}`);
+            }, error => {
+                const { code } = error[0];
+                if (code === 261) {
+                    console.log('Failed to POST due to rate limiting. Needs some caching!');
+                }
+            })
+            .catch(error => console.error(error));
+    });
+    stream.on('error', error => {
+        console.error(error);
+    });
+});
